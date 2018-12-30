@@ -11,12 +11,15 @@
 # Vendor (dependencies) directory
 /vendor/
 
-# Output binary directory
-/build/
-/package.yml
+# Temporary file
+/.tmpmsg
+/.tmpret
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
+
+# Output binary directory
+/build/
 
 # IDE
 /.idea/
