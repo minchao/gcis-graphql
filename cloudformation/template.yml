@@ -1,9 +1,30 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 
+Parameters:
+
+  ParamStackName:
+    Type: String
+    Default: gcis-graphql
+  ParamENV:
+    Type: String
+
 Resources:
+
   Lambda:
     Type: AWS::Serverless::Function
     Properties:
       Handler: build/handler
       Runtime: go1.x
+
+  AppSyncAPI:
+    Type: AWS::AppSync::GraphQLApi
+    Properties:
+      Name: !Join [ -, [ !Ref ParamStackName, !Ref ParamENV ] ]
+      AuthenticationType: API_KEY
+
+Outputs:
+
+  GraphQL:
+    Description: GraphQL URL
+    Value: !GetAtt [ AppSyncAPI, GraphQLUrl ]
