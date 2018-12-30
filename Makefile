@@ -8,6 +8,8 @@ CFN_BUCKET_NAME ?= $(PROJECT_NAME)-bucket
 CFN_TEMPLATE := "./cloudformation/template.yml"
 CFN_TEMPLATE_DIR = $(shell dirname $(CFN_TEMPLATE))
 CFN_PACKAGED_TEMPLATE := "./build/packaged.yml"
+CFN_PARAMETER_FILE ?= ""
+CFN_PARAMETER_OVERRIDES := $(if $(CFN_PARAMETER_FILE:""=),--parameter-overrides $(shell jq -j '.[] | "\"" + .ParameterKey + "=" + .ParameterValue +"\" "' $(CFN_PARAMETER_FILE)),)
 GOOS := linux
 
 TMP_MSG := ".tmpmsg"
@@ -76,6 +78,7 @@ cfn-changeset:cfn-package
 		--stack-name $(CFN_STACK_NAME) \
 		--template-file $(CFN_PACKAGED_TEMPLATE) \
 		--no-execute-changeset \
+		$(CFN_PARAMETER_OVERRIDES) \
 		--capabilities CAPABILITY_NAMED_IAM \
 		--region $(AWS_REGION) \
 		1> $(TMP_MSG) 2>&1); echo $${PIPESTATUS[0]} > $(TMP_RET))
@@ -98,6 +101,7 @@ deploy:build cfn-package
 	aws cloudformation deploy \
 		--stack-name $(CFN_STACK_NAME) \
 		--template-file $(CFN_PACKAGED_TEMPLATE) \
+		$(CFN_PARAMETER_OVERRIDES) \
 		--capabilities CAPABILITY_NAMED_IAM \
 		--no-fail-on-empty-changeset \
 		--region $(AWS_REGION)
