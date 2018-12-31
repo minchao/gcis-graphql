@@ -13,6 +13,7 @@ var (
 
 func init() {
 	_ = r.Add("query.company", handles.HandleCompany)
+	_ = r.Add("query.search", handles.HandleSearch)
 }
 
 func main() {
