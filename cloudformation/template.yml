@@ -23,8 +23,17 @@ Resources:
       Name: !Join [ -, [ !Ref ParamStackName, !Ref ParamENV ] ]
       AuthenticationType: API_KEY
 
+  AppSyncKey:
+    Type: AWS::AppSync::ApiKey
+    Properties:
+      ApiId: !GetAtt [ AppSyncAPI, ApiId ]
+
 Outputs:
 
   GraphQL:
     Description: GraphQL URL
     Value: !GetAtt [ AppSyncAPI, GraphQLUrl ]
+
+  APIKey:
+    Description: API Key
+    Value: !GetAtt [ AppSyncKey, ApiKey ]
