@@ -18,7 +18,6 @@ type company struct {
 }
 
 func HandleCompany(c companyEvent) (*company, error) {
-	client := gcis.NewClient()
 	info, _, err := client.Company.GetBasicInformation(context.Background(),
 		&gcis.CompanyBasicInformationInput{BusinessAccountingNO: c.ID})
 	if err != nil {

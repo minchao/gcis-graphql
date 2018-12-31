@@ -2,5 +2,9 @@
   {
     "ParameterKey": "ParamENV",
     "ParameterValue": "dev"
+  },
+  {
+    "ParameterKey": "ParamGCISBaseURL",
+    "ParameterValue": "http://data.gcis.nat.gov.tw/"
   }
 ]
