@@ -24,7 +24,7 @@ Resources:
       Handler: build/handler
       Runtime: go1.x
       MemorySize: 128
-      Timeout: 6
+      Timeout: 10
       Environment:
         Variables:
           GCIS_BASE_URL: !Ref ParamGCISBaseURL
