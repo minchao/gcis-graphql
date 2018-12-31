@@ -17,14 +17,14 @@ type company struct {
 	Name string `json:"name"`
 }
 
-func HandleCompany(c companyEvent) (*company, error) {
+func HandleCompany(event companyEvent) (*company, error) {
 	info, _, err := client.Company.GetBasicInformation(context.Background(),
-		&gcis.CompanyBasicInformationInput{BusinessAccountingNO: c.ID})
+		&gcis.CompanyBasicInformationInput{BusinessAccountingNO: event.ID})
 	if err != nil {
 		return nil, errors.New("unexpected error")
 	}
 	if info == nil {
-		return nil, fmt.Errorf("cannot find company with ID: %s", c.ID)
+		return nil, fmt.Errorf("cannot find company with ID: %s", event.ID)
 	}
 
 	return &company{
