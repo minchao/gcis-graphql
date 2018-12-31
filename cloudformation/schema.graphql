@@ -1,0 +1,12 @@
+type Company {
+    id: ID
+    name: String
+}
+
+type Query {
+    company(id: ID): Company!
+}
+
+schema {
+    query: Query
+}
