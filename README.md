@@ -2,7 +2,11 @@
 
 [![Build Status](https://travis-ci.com/minchao/gcis-graphql.svg?branch=master)](https://travis-ci.com/minchao/gcis-graphql)
 
-經濟部商工行政資料 GraphQL 查詢服務，基於 AppSync 與 Lambda resolver 實現，目前支援的 GraphQL 查詢請參考 [schema.graphql](./cloudformation/schema.graphql)
+本專案為經濟部商工行政資料查詢服務的 GraphQL 包裝，基於 AppSync 與 Lambda resolver 實現，並透過 CloudFormation 自動部署到 AWS。
+
+## GraphQL Schema
+
+請參考 [schema.graphql](./cloudformation/schema.graphql)。
 
 ## 必要條件
 
@@ -12,12 +16,13 @@
   - CloudFormation
   - AWS CLI
 - [Golang](https://golang.org/)
+- [GNU Make](https://www.gnu.org/software/make/)
 
 ## 使用
 
 ### 安裝
 
-使用 `go get` 指令下載本專案到你的 $GOPATH 路徑下
+使用 `go get` 指令將專案程式碼下載到你的 $GOPATH 路徑下
 
 ```bash
 go get https://github.com/minchao/gcis-graphql
@@ -78,7 +83,7 @@ make describe
 
 ## 測試
 
-### 查詢公司名稱
+### 統編查詢公司
 
 ```bash
 curl -XPOST https://your-gcis-service.appsync-api.ap-northeast-1.amazonaws.com/graphql \
@@ -94,6 +99,28 @@ curl -XPOST https://your-gcis-service.appsync-api.ap-northeast-1.amazonaws.com/g
       "id": "84598349",
       "name": "一零四資訊科技股份有限公司"
     }
+  }
+}
+```
+
+### 關鍵字查詢公司
+
+```bash
+curl -XPOST https://your-gcis-service.appsync-api.ap-northeast-1.amazonaws.com/graphql \
+     -H "Content-Type:application/graphql" \
+     -H "x-api-key:your-api-key" \
+     -d '{ "query": "query { search(keyword: \"一零四資訊\") { id name } }" }' | jq
+```
+
+```json
+{
+  "data": {
+    "search": [
+      {
+        "id": "84598349",
+        "name": "一零四資訊科技股份有限公司"
+      }
+    ]
   }
 }
 ```
