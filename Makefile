@@ -7,7 +7,8 @@ CFN_STACK_NAME ?= $(PROJECT_NAME)
 CFN_BUCKET_NAME ?= $(PROJECT_NAME)-bucket
 CFN_TEMPLATE := "./cloudformation/template.yml"
 CFN_TEMPLATE_DIR = $(shell dirname $(CFN_TEMPLATE))
-CFN_PACKAGED_TEMPLATE := "./build/packaged.yml"
+CFN_PACKAGED_TEMPLATE := "./cloudformation/build/packaged.yml"
+CFN_BUILD_DIR := $(shell dirname $(CFN_PACKAGED_TEMPLATE))
 CFN_PARAMETER_FILE ?= ""
 CFN_PARAMETER_OVERRIDES := $(if $(CFN_PARAMETER_FILE:""=),--parameter-overrides $(shell jq -j '.[] | "\"" + .ParameterKey + "=" + .ParameterValue +"\" "' $(CFN_PARAMETER_FILE)),)
 GOOS := linux
@@ -26,7 +27,7 @@ install:
 
 clean:
 	@$(call print_target)
-	rm -rf ./build
+	rm -rf $(CFN_BUILD_DIR)
 	rm -rf $(TMP_MSG)
 	rm -rf $(TMP_RET)
 
@@ -50,7 +51,7 @@ lint:
 
 build:lint
 	@$(call print_target)
-	@ GOOS=$(GOOS) go build -ldflags="-s -w" -o build/handler cmd/main.go
+	@ GOOS=$(GOOS) go build -ldflags="-s -w" -o $(CFN_BUILD_DIR)/handler cmd/main.go
 
 cfn-lint:
 	@$(call print_target)
@@ -65,6 +66,7 @@ cfn-validate:cfn-lint
 
 cfn-package:cfn-validate
 	@$(call print_target)
+	@mkdir -p $(CFN_BUILD_DIR)
 	aws cloudformation package \
 		--template-file $(CFN_TEMPLATE) \
 		--output-template-file $(CFN_PACKAGED_TEMPLATE) \
@@ -97,7 +99,10 @@ cfn-changeset:cfn-package
 		exit $$(cat $(TMP_RET)); \
 	fi
 
-deploy:build cfn-package
+package:build cfn-package
+
+deploy:package
+	@$(call print_target)
 	aws cloudformation deploy \
 		--stack-name $(CFN_STACK_NAME) \
 		--template-file $(CFN_PACKAGED_TEMPLATE) \
