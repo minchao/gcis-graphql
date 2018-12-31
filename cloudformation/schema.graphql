@@ -4,7 +4,7 @@ type Company {
 }
 
 type Query {
-    company(id: ID): Company!
+    company(id: ID!): Company!
     search(keyword: String!, status: String, offset: Int, limit: Int): [Company!]!
 }
 
