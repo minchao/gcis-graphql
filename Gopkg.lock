@@ -13,9 +13,29 @@
   revision = "9e3676ee8ca83aee500682f382e10b9d03660093"
   version = "v1.8.0"
 
+[[projects]]
+  branch = "master"
+  digest = "1:da3d32538970067b108a159796b3e647ec62f769ba5a0380f57dc359c20aaa66"
+  name = "github.com/minchao/go-gcis"
+  packages = ["gcis"]
+  pruneopts = "UT"
+  revision = "3dc7b0995a78920d6e9c979c5acfb1265ad7842d"
+
+[[projects]]
+  digest = "1:43afbcc0129ff5d58d43895dbc22da1bcb24577646aa42df28626668baa7b215"
+  name = "github.com/sbstjn/appsync-resolvers"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "08cb572f11cd9cf4088e0af5f1e005c2bf3d58ed"
+  version = "v0.3.1"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  input-imports = ["github.com/aws/aws-lambda-go/lambda"]
+  input-imports = [
+    "github.com/aws/aws-lambda-go/lambda",
+    "github.com/minchao/go-gcis/gcis",
+    "github.com/sbstjn/appsync-resolvers",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1

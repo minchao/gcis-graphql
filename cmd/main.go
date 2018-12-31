@@ -1,13 +1,20 @@
 package main
 
 import (
+	"github.com/minchao/gcis-graphql/internal/app/handles"
+
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/sbstjn/appsync-resolvers"
 )
 
-func hello() (string, error) {
-	return "Hello ƛ!", nil
+var (
+	r = resolvers.New()
+)
+
+func init() {
+	_ = r.Add("query.company", handles.HandleCompany)
 }
 
 func main() {
-	lambda.Start(hello)
+	lambda.Start(r.Handle)
 }
