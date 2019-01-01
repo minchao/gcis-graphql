@@ -3,7 +3,6 @@ package handles
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/minchao/go-gcis/gcis"
 )
@@ -24,7 +23,7 @@ func HandleCompany(event companyEvent) (*company, error) {
 		return nil, errors.New("unexpected error")
 	}
 	if info == nil {
-		return nil, fmt.Errorf("cannot find company with ID: %s", event.ID)
+		return nil, nil
 	}
 
 	return &company{
