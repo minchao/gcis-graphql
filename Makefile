@@ -20,6 +20,10 @@ print_target = echo "$(shell tput bold;tput setaf 2 ) == $@ == $(shell tput sgr0
 print_msg = echo "$(shell tput setaf $(1))$(2)$(shell tput sgr0)"
 check_dependency = $(if $(shell command -v $(1) 2> /dev/null),,$(error Make sure $(1) is installed))
 
+help:
+	@echo "\nUsage: $ make COMMAND\n\nCommands:"
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
 check-required-tools:
 	@$(call print_target)
 	@$(call check_dependency,aws)
@@ -30,27 +34,27 @@ check-required-tools:
 	@$(call check_dependency,tput)
 	@echo "√ Pass"
 
-install:
+install: ## Install required tools
 	pip install --user awscli cfn-lint
 	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(TRAVIS_HOME)/.local/bin v1.12.5
 	curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 	@make check-required-tools
 
-clean:
+clean: ## Clean all artifacts
 	@$(call print_target)
 	rm -rf $(CFN_BUILD_DIR)
 	rm -rf $(TMP_MSG)
 	rm -rf $(TMP_RET)
 
-deps:
+deps: ## Install the lambda's dependencies
 	@$(call print_target)
 	dep ensure -v
 
-lint:
+lint: ## Run all linters
 	@$(call print_target)
 	@golangci-lint run -E gofmt ./cmd && echo "√ golangci-lint" || exit 1
 
-build:lint
+build:lint ## Build the lambda binary
 	@$(call print_target)
 	@ GOOS=$(GOOS) go build -ldflags="-s -w" -o $(CFN_BUILD_DIR)/handler cmd/main.go
 
@@ -75,7 +79,7 @@ cfn-package:cfn-validate
 		--s3-prefix cfn-templates \
 		--region $(AWS_REGION)
 
-cfn-changeset:cfn-package
+cfn-changeset:cfn-package ## Create a change list of stack
 	@$(call print_target)
 	@$$((aws cloudformation deploy \
 		--stack-name $(CFN_STACK_NAME) \
@@ -100,9 +104,9 @@ cfn-changeset:cfn-package
 		exit $$(cat $(TMP_RET)); \
 	fi
 
-package:build cfn-package
+package:build cfn-package ## Package the local artifacts
 
-deploy:package
+deploy:package ## Deploy to AWS
 	@$(call print_target)
 	aws cloudformation deploy \
 		--stack-name $(CFN_STACK_NAME) \
@@ -112,7 +116,7 @@ deploy:package
 		--no-fail-on-empty-changeset \
 		--region $(AWS_REGION)
 
-describe:
+describe: ## Return the stack description
 	@$(call print_target)
 	aws cloudformation describe-stacks \
 		--stack-name $(CFN_STACK_NAME) \
