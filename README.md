@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/minchao/gcis-graphql.svg?branch=master)](https://travis-ci.com/minchao/gcis-graphql)
 
-本專案是經濟部商工行政資料查詢服務的 GraphQL 包裝，其基於 [AppSync](https://aws.amazon.com/appsync/) 與 Lambda 實現，並使用 [CloudFormation](https://aws.amazon.com/cloudformation/) ([SAM](https://aws.amazon.com/tw/serverless/sam/)) 管理資源及部署到 AWS 環境。
+本專案是經濟部商工行政資料查詢服務的 GraphQL 包裝，基於 [AppSync](https://aws.amazon.com/appsync/) 與 Lambda 實現，並使用 [CloudFormation](https://aws.amazon.com/cloudformation/) ([SAM](https://aws.amazon.com/tw/serverless/sam/)) 管理資源及部署到 AWS 環境。
 
 ## GraphQL Schema
 
