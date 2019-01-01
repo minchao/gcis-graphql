@@ -20,17 +20,6 @@ print_target = echo "$(shell tput bold;tput setaf 2 ) == $@ == $(shell tput sgr0
 print_msg = echo "$(shell tput setaf $(1))$(2)$(shell tput sgr0)"
 check_dependency = $(if $(shell command -v $(1) 2> /dev/null),,$(error Make sure $(1) is installed))
 
-install:
-	pip install --user awscli cfn-lint
-	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(TRAVIS_HOME)/.local/bin v1.12.5
-	curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-
-clean:
-	@$(call print_target)
-	rm -rf $(CFN_BUILD_DIR)
-	rm -rf $(TMP_MSG)
-	rm -rf $(TMP_RET)
-
 check-required-tools:
 	@$(call print_target)
 	@$(call check_dependency,aws)
@@ -40,6 +29,18 @@ check-required-tools:
 	@$(call check_dependency,jq)
 	@$(call check_dependency,tput)
 	@echo "√ Pass"
+
+install:
+	pip install --user awscli cfn-lint
+	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(TRAVIS_HOME)/.local/bin v1.12.5
+	curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+	@make check-required-tools
+
+clean:
+	@$(call print_target)
+	rm -rf $(CFN_BUILD_DIR)
+	rm -rf $(TMP_MSG)
+	rm -rf $(TMP_RET)
 
 deps:
 	@$(call print_target)

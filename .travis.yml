@@ -14,7 +14,6 @@ before_install:
 
 install:
   - make install
-  - make check-required-tools
   - make deps
 
 script:
