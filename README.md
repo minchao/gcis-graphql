@@ -69,6 +69,18 @@ export AWS_SECRET_ACCESS_KEY="YOUR_AWS_SECRET_ACCESS_KEY"
 export AWS_SESSION_TOKEN="YOUR_AWS_SESSION_TOKEN"
 ```
 
+建立打包程式用的 S3 bucket，如果要使用已建立的 S3 bucket，請略過這個步驟
+
+```bash
+aws s3 mb s3://your-deployment-bucket-name
+```
+
+設定環境變數
+
+```bash
+export CFN_BUCKET_NAME="your-deployment-bucket-name"
+```
+
 執行部署
 
 ```
