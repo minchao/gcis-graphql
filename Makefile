@@ -16,8 +16,8 @@ GOOS := linux
 TMP_MSG := ".tmpmsg"
 TMP_RET := ".tmpret"
 
-print_target = echo "$(shell tput bold;tput setaf 2 ) == $@ == $(shell tput sgr0)"
-print_msg = echo "$(shell tput setaf $(1))$(2)$(shell tput sgr0)"
+print_target = echo "\033[1;36m == $@ == \033[0m\n"
+print_msg = echo "\033[$(1)m$(2)\033[0m\n"
 check_dependency = $(if $(shell command -v $(1) 2> /dev/null),,$(error Make sure $(1) is installed))
 
 help:
@@ -31,12 +31,11 @@ check-required-tools:
 	@$(call check_dependency,dep)
 	@$(call check_dependency,golangci-lint)
 	@$(call check_dependency,jq)
-	@$(call check_dependency,tput)
 	@echo "√ Pass"
 
 install: ## Install required tools
 	pip install --user awscli cfn-lint
-	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(TRAVIS_HOME)/.local/bin v1.12.5
+	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $$(go env GOPATH)/bin v1.12.5
 	curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 	@make check-required-tools
 
