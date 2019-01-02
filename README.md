@@ -6,7 +6,7 @@
 
 ## GraphQL Schema
 
-請參考 [schema.graphql](./cloudformation/schema.graphql)。
+請參考 [schema.graphql](schema.graphql)。
 
 ## 必要條件
 
@@ -72,7 +72,7 @@ export AWS_SESSION_TOKEN="YOUR_AWS_SESSION_TOKEN"
 建立打包程式用的 S3 bucket，如果要使用已建立的 S3 bucket，請略過這個步驟
 
 ```bash
-aws s3 mb s3://your-deployment-bucket-name
+aws s3 mb s3://your-deployment-bucket-name --region <region-name>
 ```
 
 設定環境變數

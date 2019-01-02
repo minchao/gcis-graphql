@@ -19,7 +19,7 @@
 *.out
 
 # Output binary directory
-/cloudformation/build/*
+/build/
 
 # IDE
 /.idea/

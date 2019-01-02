@@ -5,9 +5,8 @@ PROJECT_NAME ?= "gcis-graphql"
 AWS_REGION ?= "ap-northeast-1"
 CFN_STACK_NAME ?= $(PROJECT_NAME)
 CFN_BUCKET_NAME ?= $(PROJECT_NAME)-bucket
-CFN_TEMPLATE := "./cloudformation/template.yml"
-CFN_TEMPLATE_DIR = $(shell dirname $(CFN_TEMPLATE))
-CFN_PACKAGED_TEMPLATE := "./cloudformation/build/packaged.yml"
+CFN_TEMPLATE := "./template.yml"
+CFN_PACKAGED_TEMPLATE := "./build/packaged.yml"
 CFN_BUILD_DIR := $(shell dirname $(CFN_PACKAGED_TEMPLATE))
 CFN_PARAMETER_FILE ?= ""
 CFN_PARAMETER_OVERRIDES := $(if $(CFN_PARAMETER_FILE:""=),--parameter-overrides $(shell jq -j '.[] | "\"" + .ParameterKey + "=" + .ParameterValue +"\" "' $(CFN_PARAMETER_FILE)),)
@@ -63,10 +62,7 @@ cfn-lint:
 
 cfn-validate:cfn-lint
 	@$(call print_target)
-	@find $(CFN_TEMPLATE_DIR) -type f \( -name "*.yaml" -or -name "*.yml" \) | \
-		while read f; do \
-		( aws cloudformation validate-template --template-body file://$$f 1>/dev/null 2> $(TMP_MSG) && echo "√ $$f") || \
-		( echo "✗ $$f" && cat $(TMP_MSG) && >$(TMP_MSG) && exit 1 ) ; done
+	aws cloudformation validate-template --template-body file://$(CFN_TEMPLATE)
 
 cfn-package:cfn-validate
 	@$(call print_target)

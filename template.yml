@@ -21,7 +21,8 @@ Resources:
   Lambda:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: build/handler
+      CodeUri: build/
+      Handler: handler
       Runtime: go1.x
       MemorySize: 128
       Timeout: 10
