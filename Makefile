@@ -30,10 +30,12 @@ check-required-tools:
 	@$(call check_dependency,dep)
 	@$(call check_dependency,golangci-lint)
 	@$(call check_dependency,jq)
+	@$(call check_dependency,cfn_nag)
 	@echo "√ Pass"
 
 install: ## Install required tools
 	pip install --user awscli cfn-lint
+	gem install cfn-nag
 	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $$(go env GOPATH)/bin v1.12.5
 	curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 	@make check-required-tools
@@ -48,7 +50,7 @@ deps: ## Install the lambda's dependencies
 	@$(call print_target)
 	dep ensure -v
 
-lint: ## Run all linters
+lint: ## Run all Go linters
 	@$(call print_target)
 	@golangci-lint run -E gofmt ./cmd && echo "√ golangci-lint" || exit 1
 
@@ -60,7 +62,13 @@ cfn-lint:
 	@$(call print_target)
 	@cfn-lint -t $(CFN_TEMPLATE) && echo "√ $(CFN_TEMPLATE)" || exit 1
 
-cfn-validate:cfn-lint
+cfn-nag:
+	@$(call print_target)
+	@cfn_nag_scan --input-path=$(CFN_TEMPLATE) --allow-suppression
+
+cfn-test:cfn-lint cfn-nag ## Check the CloudFormation template
+
+cfn-validate:cfn-test
 	@$(call print_target)
 	aws cloudformation validate-template --template-body file://$(CFN_TEMPLATE)
 

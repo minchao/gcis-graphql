@@ -61,7 +61,6 @@ Resources:
                 Action: lambda:invokeFunction
                 Resource:
                   - !GetAtt [ Lambda, Arn ]
-                  - !Join [ '', [ !GetAtt [ Lambda, Arn ], ':*' ] ]
 
   AppSyncSchema:
     Type: AWS::AppSync::GraphQLSchema

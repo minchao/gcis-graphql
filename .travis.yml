@@ -17,5 +17,5 @@ install:
   - make deps
 
 script:
+  - make cfn-test
   - make build
-  - make cfn-lint
