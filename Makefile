@@ -52,7 +52,7 @@ deps: ## Install the lambda's dependencies
 
 lint: ## Run all Go linters
 	@$(call print_target)
-	@golangci-lint run -E gofmt ./cmd && echo "√ golangci-lint" || exit 1
+	@golangci-lint run -E gofmt ./cmd ./internal/... && echo "√ golangci-lint" || exit 1
 
 build:lint ## Build the lambda binary
 	@$(call print_target)
