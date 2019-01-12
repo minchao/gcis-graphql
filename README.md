@@ -16,7 +16,7 @@
   - CloudFormation
   - AWS CLI
 - [Golang](https://golang.org/)
-- [GNU Make](https://www.gnu.org/software/make/)a
+- [GNU Make](https://www.gnu.org/software/make/)
 
 ## 使用
 
